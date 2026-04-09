@@ -1,11 +1,11 @@
-### UML Діаграма архітектури (Лабораторна 1.3)
+### UML Діаграма архітектури (Лабораторна 2)
 
 ```mermaid
-%%{init: {"theme": "default", "themeVariables": { "fontSize": "18px", "fontFamily": "arial" }}}%%
 classDiagram
     direction TB
 
-    %% --- ВИДІЛЕННЯ ПАТЕРНІВ РАМКАМИ (Вимога Лаб 1.3) ---
+    %% --- ПАТЕРНИ ПРОЕКТУВАННЯ (Виділені рамками згідно з Лаб 1.3) ---
+    
     namespace Observer_Pattern {
         class ConsoleLogger
         class GameStateEventArgs
@@ -16,32 +16,43 @@ classDiagram
         class GameFactory
     }
 
-    %% --- БАЗОВІ СУТНОСТІ ---
-    class IGame { <<interface>> }
-    class IInstallable { <<interface>> }
+    %% --- ІНТЕРФЕЙСИ ТА СУТНОСТІ ---
+    
+    class IGame {
+        <<interface>>
+    }
+    class IInstallable {
+        <<interface>>
+    }
+    
     class StrategyGame
     class SimulatorGame
     class OnlineCasino
+    
     class PC
     class Player
     class SteeringWheel
 
-    %% --- 1. ЗВ'ЯЗКИ ПАТЕРНІВ ---
-    GameFactory ..> IGame : Creates
-    ConsoleLogger ..> GameBase : Subscribes
-    ConsoleLogger ..> GameStateEventArgs : Uses
-    GameBase --> GameStateEventArgs : Creates
-
-    %% --- 2. НАСЛІДУВАННЯ ТА РЕАЛІЗАЦІЯ ---
+    %% --- ЗВ'ЯЗКИ (НАСЛІДУВАННЯ ТА РЕАЛІЗАЦІЯ) ---
+    
     GameBase ..|> IGame : Realizes
-    StrategyGame --|> GameBase
-    SimulatorGame --|> GameBase
-    OnlineCasino --|> GameBase
+    StrategyGame --|> GameBase : Inherits
+    SimulatorGame --|> GameBase : Inherits
+    OnlineCasino --|> GameBase : Inherits
 
-    StrategyGame ..|> IInstallable
-    SimulatorGame ..|> IInstallable
+    StrategyGame ..|> IInstallable : Realizes
+    SimulatorGame ..|> IInstallable : Realizes
 
-    %% --- 3. АГРЕГАЦІЯ ТА ВИКОРИСТАННЯ (LoD) ---
+    %% --- ВЗАЄМОДІЯ ПАТЕРНІВ ---
+    
+    GameFactory ..> IGame : Creates (Factory)
+    
+    GameBase --> GameStateEventArgs : Creates Event
+    ConsoleLogger ..> GameStateEventArgs : Receives Event
+    ConsoleLogger ..> GameBase : Subscribes (Observer)
+
+    %% --- АГРЕГАЦІЯ ТА ЗАКОН ДЕМЕТРИ ---
+    
     Player o--> IGame : Aggregation
     SimulatorGame o--> SteeringWheel : Aggregation
     GameBase ..> PC : Uses (Law of Demeter)
